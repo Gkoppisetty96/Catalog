@@ -25,6 +25,9 @@ class Detail extends Component {
               <h1>
                 {this.state.book.title} by {this.state.book.author}
               </h1>
+              <h3>
+              {this.state.book.genre}
+              </h3>
             </Jumbotron>
           </Col>
         </Row>

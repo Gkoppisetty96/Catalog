@@ -12,7 +12,7 @@ class Books extends Component {
     books: [],
     title: "",
     author: "",
-    synopsis: ""
+    genre: ""
   };
 
   componentDidMount() {
@@ -22,7 +22,7 @@ class Books extends Component {
   loadBooks = () => {
     API.getBooks()
       .then(res =>
-        this.setState({ books: res.data, title: "", author: "", synopsis: "" })
+        this.setState({ books: res.data, title: "", author: "", genre: "" })
       )
       .catch(err => console.log(err));
   };
@@ -42,11 +42,11 @@ class Books extends Component {
 
   handleFormSubmit = event => {
     event.preventDefault();
-    if (this.state.title && this.state.author) {
+    if (this.state.title && this.state.author && this.state.genre) {
       API.saveBook({
         title: this.state.title,
         author: this.state.author,
-        synopsis: this.state.synopsis
+        genre: this.state.genre
       })
         .then(res => this.loadBooks())
         .catch(err => console.log(err));
@@ -59,7 +59,7 @@ class Books extends Component {
         <Row>
           <Col size="md-6">
             <Jumbotron>
-              <h1>What Books Should I Read?</h1>
+              <h1>Get a New Book?</h1>
             </Jumbotron>
             <form>
               <Input
@@ -74,14 +74,20 @@ class Books extends Component {
                 name="author"
                 placeholder="Author (required)"
               />
-              <TextArea
+              <Input
+                value={this.state.genre}
+                onChange={this.handleInputChange}
+                name="genre"
+                placeholder="Genre (required)"
+              />
+              {/* <TextArea
                 value={this.state.synopsis}
                 onChange={this.handleInputChange}
                 name="synopsis"
                 placeholder="Synopsis (Optional)"
-              />
+              /> */}
               <FormBtn
-                disabled={!(this.state.author && this.state.title)}
+                disabled={!(this.state.author && this.state.title && this.state.genre)}
                 onClick={this.handleFormSubmit}
               >
                 Submit Book
@@ -90,8 +96,12 @@ class Books extends Component {
           </Col>
           <Col size="md-6 sm-12">
             <Jumbotron>
-              <h1>Books On My List</h1>
+              <h1>My Bookshelf</h1>
             </Jumbotron>
+            <button type="button" class="btn btn-outline-dark" id= "az" > A - Z </button>
+            <button type="button" class="btn btn-outline-dark" id= "fiction"> Fiction </button>
+            <button type="button" class="btn btn-outline-dark" id= "nonfiction"> Non-Fiction </button>
+        
             {this.state.books.length ? (
               <List>
                 {this.state.books.map(book => (
