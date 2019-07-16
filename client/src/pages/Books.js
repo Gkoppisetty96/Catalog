@@ -12,7 +12,8 @@ class Books extends Component {
     books: [],
     title: "",
     author: "",
-    genre: ""
+    genre: "", 
+    synopsis: ""
   };
 
   componentDidMount() {
@@ -22,7 +23,7 @@ class Books extends Component {
   loadBooks = () => {
     API.getBooks()
       .then(res =>
-        this.setState({ books: res.data, title: "", author: "", genre: "" })
+        this.setState({ books: res.data, title: "", author: "", genre: "", synopsis: "" })
       )
       .catch(err => console.log(err));
   };
@@ -46,7 +47,8 @@ class Books extends Component {
       API.saveBook({
         title: this.state.title,
         author: this.state.author,
-        genre: this.state.genre
+        genre: this.state.genre, 
+        synopsis: this.state.synopsis
       })
         .then(res => this.loadBooks())
         .catch(err => console.log(err));
@@ -98,6 +100,7 @@ class Books extends Component {
             <Jumbotron>
               <h1>My Bookshelf</h1>
             </Jumbotron>
+            <button type="button" class="btn btn-outline-dark" id= "all" > All </button>
             <button type="button" class="btn btn-outline-dark" id= "az" > A - Z </button>
             <button type="button" class="btn btn-outline-dark" id= "fiction"> Fiction </button>
             <button type="button" class="btn btn-outline-dark" id= "nonfiction"> Non-Fiction </button>
