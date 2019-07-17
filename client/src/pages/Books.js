@@ -80,9 +80,9 @@ class Books extends Component {
           let nowBook = this.gApiResults.items[0].volumeInfo;
 
           //this.toggleModal(true);
-          this.setState({
-            isOpen: true
-          });
+          // this.setState({
+          //   // isOpen: true
+          // });
           
 
           // $(this.modal).modal('show');
