@@ -1,20 +1,32 @@
 import React, { Component } from "react";
+import axios from 'axios';
 import DeleteBtn from "../components/DeleteBtn";
 import Jumbotron from "../components/Jumbotron";
+import Modal from "../components/Modal";
 import API from "../utils/API";
 import { Link } from "react-router-dom";
 import { Col, Row, Container } from "../components/Grid";
 import { List, ListItem } from "../components/List";
-import { Input, TextArea, FormBtn } from "../components/Form";
+import { Input, FormBtn } from "../components/Form";
 
 class Books extends Component {
   state = {
     books: [],
+    gApiResults: [],
     title: "",
     author: "",
     genre: "", 
-    synopsis: ""
+    synopsis: "",
+    cover: ""
   };
+
+  constructor(props) {
+    super(props);
+    this.state.isOpen = false;
+  }
+
+  
+
 
   componentDidMount() {
     this.loadBooks();
@@ -28,6 +40,13 @@ class Books extends Component {
       .catch(err => console.log(err));
   };
 
+  toggleModal = () => {
+    console.log("onload");
+    this.setState({
+      isOpen: !this.state.isOpen
+    });
+  }
+
   deleteBook = id => {
     API.deleteBook(id)
       .then(res => this.loadBooks())
@@ -40,20 +59,68 @@ class Books extends Component {
       [name]: value
     });
   };
+  
+  googleBooksAPI = event => {
+    // set what the API is calling
+    let title = this.state.title;
+    let author = this.state.author;
+    console.log (title + "," + author);
+
+    let queryURL = 'https://www.googleapis.com/books/v1/volumes?q=' + title + '+inauthor:' + author+ '&key=AIzaSyAsQc_MVFx8AusunHiSU18mbyM4rLCMZ_c';
+
+    // axios call
+    axios.get(queryURL)
+      .then(res => {
+        
+        if(res.status === 200){
+          console.log("SUCCESSS")
+          console.log (res.data);
+          this.gApiResults = res.data;
+
+          let nowBook = this.gApiResults.items[0].volumeInfo;
+
+          //this.toggleModal(true);
+          this.setState({
+            isOpen: true
+          });
+          
+
+          // $(this.modal).modal('show');
+        // $(this.modal).on('hidden.bs.modal', handleModalCloseClick);
+
+          console.log (nowBook);
+          
+        }
+
+      })
+  }
 
   handleFormSubmit = event => {
+    console.log(this.state.title + " " + this.state.author + " " + this.state.genre +" is being added");
+    
     event.preventDefault();
+    // call google API
+    this.googleBooksAPI();
+    // user confirmation in modal 
+
+    // add to DB
+
     if (this.state.title && this.state.author && this.state.genre) {
       API.saveBook({
         title: this.state.title,
         author: this.state.author,
         genre: this.state.genre, 
-        synopsis: this.state.synopsis
+        synopsis: this.state.synopsis,
+        cover: this.state.cover
       })
         .then(res => this.loadBooks())
         .catch(err => console.log(err));
     }
   };
+
+
+
+  
 
   render() {
     return (
@@ -91,11 +158,14 @@ class Books extends Component {
               <FormBtn
                 disabled={!(this.state.author && this.state.title && this.state.genre)}
                 onClick={this.handleFormSubmit}
+
               >
                 Submit Book
               </FormBtn>
             </form>
           </Col>
+
+         
           <Col size="md-6 sm-12">
             <Jumbotron>
               <h1>My Bookshelf</h1>
@@ -123,6 +193,13 @@ class Books extends Component {
             )}
           </Col>
         </Row>
+
+        <Modal show={this.state.isOpen}
+            onClose={this.toggleModal}>
+            <h1> MODAL HERE</h1>
+         </Modal>
+
+      
       </Container>
     );
   }
