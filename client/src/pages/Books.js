@@ -8,6 +8,7 @@ import { Link } from "react-router-dom";
 import { Col, Row, Container } from "../components/Grid";
 import { List, ListItem } from "../components/List";
 import { Input, FormBtn } from "../components/Form";
+require("dotenv").config();
 
 // console.log(process.env.REACT_APP_GOOGLESECRET);
 
@@ -71,7 +72,8 @@ class Books extends Component {
 
     console.log (process.env.REACT_APP_GOOGLESECRET);
 
-    let queryURL = 'https://www.googleapis.com/books/v1/volumes?q=' + title + '+inauthor:' + author + '&key=' + process.env.REACT_APP_GOOGLESECRET;
+    let queryURL = 'https://www.googleapis.com/books/v1/volumes?q=' + title + '+inauthor:' + author + '&key=AIzaSyAsQc_MVFx8AusunHiSU18mbyM4rLCMZ_c' ;
+    // + process.env.REACT_APP_GOOGLESECRET;
 
     // axios call
     axios.get(queryURL)
