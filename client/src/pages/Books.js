@@ -2,6 +2,7 @@ import React, { Component } from "react";
 import axios from 'axios';
 import DeleteBtn from "../components/DeleteBtn";
 import Jumbotron from "../components/Jumbotron";
+import App from "../components/Modal";
 import Modal from "../components/Modal";
 import API from "../utils/API";
 import { Link } from "react-router-dom";
@@ -10,26 +11,32 @@ import { List, ListItem } from "../components/List";
 import { Input, FormBtn } from "../components/Form";
 require("dotenv").config();
 
-// console.log(process.env.REACT_APP_GOOGLESECRET);
 
 class Books extends Component {
   state = {
     books: [],
+    show: false,
     gApiResults: [],
     title: "",
     author: "",
     genre: "", 
     synopsis: "",
-    cover: ""
+    cover: "",
+    apiResTitle:"",
+    apiResAuthor:"",
+    apiResImage:""
   };
 
   constructor(props) {
     super(props);
-    this.state.isOpen = false;
   }
 
-  
-
+  showModal = e => {
+    console.log("triggerModel");
+    this.setState({
+      show: !this.state.show
+    });
+  };
 
   componentDidMount() {
     this.loadBooks();
@@ -68,11 +75,12 @@ class Books extends Component {
     let title = this.state.title;
     let author = this.state.author;
     console.log (title + "," + author);
-    console.log(process.env);
+
+    // console.log(process.env);
 
     console.log (process.env.REACT_APP_GOOGLESECRET);
 
-    let queryURL = 'https://www.googleapis.com/books/v1/volumes?q=' + title + '+inauthor:' + author + '&key=AIzaSyAsQc_MVFx8AusunHiSU18mbyM4rLCMZ_c' ;
+    let queryURL = 'https://www.googleapis.com/books/v1/volumes?q=' + title + '+inauthor:' + author + '&key=AIzaSyAsQc_MVFx8AusunHiSU18mbyM4rLCMZ_c';
     // + process.env.REACT_APP_GOOGLESECRET;
 
     // axios call
@@ -80,22 +88,23 @@ class Books extends Component {
       .then(res => {
         
         if(res.status === 200){
-          console.log("SUCCESSS")
+          console.log("SUCCESS")
           console.log (res.data);
           this.gApiResults = res.data;
 
           let nowBook = this.gApiResults.items[0].volumeInfo;
 
-          //this.toggleModal(true);
-          // this.setState({
-          //   // isOpen: true
-          // });
+          // console.log (nowBook);
+          console.log(nowBook);
+          console.log (nowBook.authors[0]);
+          console.log (nowBook.imageLinks.thumbnail);
+          console.log (nowBook.title);
+
+          this.state.apiResTitle = nowBook.title;
+          this.state.apiResImage = nowBook.imageLinks.thumbnail;
+          this.state.apiResAuthor = nowBook.authors[0];
           
-
-          // $(this.modal).modal('show');
-        // $(this.modal).on('hidden.bs.modal', handleModalCloseClick);
-
-          console.log (nowBook);
+          this.showModal();
           
         }
 
@@ -106,23 +115,25 @@ class Books extends Component {
     console.log(this.state.title + " " + this.state.author + " " + this.state.genre +" is being added");
     
     event.preventDefault();
+
     // call google API
     this.googleBooksAPI();
+
     // user confirmation in modal 
 
     // add to DB
 
-    if (this.state.title && this.state.author && this.state.genre) {
-      API.saveBook({
-        title: this.state.title,
-        author: this.state.author,
-        genre: this.state.genre, 
-        synopsis: this.state.synopsis,
-        cover: this.state.cover
-      })
-        .then(res => this.loadBooks())
-        .catch(err => console.log(err));
-    }
+    // if (this.state.title && this.state.author && this.state.genre) {
+    //   API.saveBook({
+    //     title: this.state.title,
+    //     author: this.state.author,
+    //     genre: this.state.genre, 
+    //     synopsis: this.state.synopsis,
+    //     cover: this.state.cover
+    //   })
+    //     .then(res => this.loadBooks())
+    //     .catch(err => console.log(err));
+    // }
   };
 
 
@@ -134,9 +145,11 @@ class Books extends Component {
       <Container fluid>
         <Row>
           <Col size="md-6">
+
             <Jumbotron>
               <h1>Get a New Book?</h1>
             </Jumbotron>
+
             <form>
               <Input
                 value={this.state.title}
@@ -156,16 +169,9 @@ class Books extends Component {
                 name="genre"
                 placeholder="Genre (required)"
               />
-              {/* <TextArea
-                value={this.state.synopsis}
-                onChange={this.handleInputChange}
-                name="synopsis"
-                placeholder="Synopsis (Optional)"
-              /> */}
               <FormBtn
                 disabled={!(this.state.author && this.state.title && this.state.genre)}
                 onClick={this.handleFormSubmit}
-
               >
                 Submit Book
               </FormBtn>
@@ -174,9 +180,11 @@ class Books extends Component {
 
          
           <Col size="md-6 sm-12">
+
             <Jumbotron>
               <h1>My Bookshelf</h1>
             </Jumbotron>
+
             <button type="button" className="btn btn-outline-dark" id= "all" > All </button>
             <button type="button" className="btn btn-outline-dark" id= "az" > A - Z </button>
             <button type="button" className="btn btn-outline-dark" id= "fiction"> Fiction </button>
@@ -201,13 +209,25 @@ class Books extends Component {
           </Col>
         </Row>
 
-        <Modal show={this.state.isOpen}
-            onClose={this.toggleModal}>
-            <h1> MODAL HERE</h1>
-         </Modal>
+        <Modal onClose={this.showModal} show={this.state.show}>
+          <Row>
 
-      
+            <Col size="md-9">
+              <label>Title  :</label>
+              <label> {this.state.apiResTitle}</label> <br/>
+              <label>Author :</label>
+              <label> {this.state.apiResAuthor}</label>
+            </Col>
+
+            <Col size="md-3">
+              <img src={this.state.apiResImage}/>
+            </Col>
+
+          </Row>
+        </Modal>
+
       </Container>
+
     );
   }
 }
