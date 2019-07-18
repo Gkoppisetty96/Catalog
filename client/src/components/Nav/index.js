@@ -7,7 +7,7 @@ function Nav() {
         Personal Catalog
       </a>
 
-      <button type="button" class="btn btn-outline-light"> Login </button>
+      <button type="button" className="btn btn-outline-light"> Login </button>
     </nav>
   );
 }

@@ -9,6 +9,8 @@ import { Col, Row, Container } from "../components/Grid";
 import { List, ListItem } from "../components/List";
 import { Input, FormBtn } from "../components/Form";
 
+// console.log(process.env.REACT_APP_GOOGLESECRET);
+
 class Books extends Component {
   state = {
     books: [],
@@ -65,8 +67,11 @@ class Books extends Component {
     let title = this.state.title;
     let author = this.state.author;
     console.log (title + "," + author);
+    console.log(process.env);
 
-    let queryURL = 'https://www.googleapis.com/books/v1/volumes?q=' + title + '+inauthor:' + author+ '&key=AIzaSyAsQc_MVFx8AusunHiSU18mbyM4rLCMZ_c';
+    console.log (process.env.REACT_APP_GOOGLESECRET);
+
+    let queryURL = 'https://www.googleapis.com/books/v1/volumes?q=' + title + '+inauthor:' + author + '&key=' + process.env.REACT_APP_GOOGLESECRET;
 
     // axios call
     axios.get(queryURL)
@@ -170,10 +175,10 @@ class Books extends Component {
             <Jumbotron>
               <h1>My Bookshelf</h1>
             </Jumbotron>
-            <button type="button" class="btn btn-outline-dark" id= "all" > All </button>
-            <button type="button" class="btn btn-outline-dark" id= "az" > A - Z </button>
-            <button type="button" class="btn btn-outline-dark" id= "fiction"> Fiction </button>
-            <button type="button" class="btn btn-outline-dark" id= "nonfiction"> Non-Fiction </button>
+            <button type="button" className="btn btn-outline-dark" id= "all" > All </button>
+            <button type="button" className="btn btn-outline-dark" id= "az" > A - Z </button>
+            <button type="button" className="btn btn-outline-dark" id= "fiction"> Fiction </button>
+            <button type="button" className="btn btn-outline-dark" id= "nonfiction"> Non-Fiction </button>
         
             {this.state.books.length ? (
               <List>
