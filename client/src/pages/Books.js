@@ -50,12 +50,12 @@ class Books extends Component {
       .catch(err => console.log(err));
   };
 
-  toggleModal = () => {
-    console.log("onload");
-    this.setState({
-      isOpen: !this.state.isOpen
-    });
-  }
+  // toggleModal = () => {
+  //   console.log("onload");
+  //   this.setState({
+  //     isOpen: !this.state.isOpen
+  //   });
+  // }
 
   deleteBook = id => {
     API.deleteBook(id)
@@ -78,7 +78,7 @@ class Books extends Component {
 
     // console.log(process.env);
 
-    console.log (process.env.REACT_APP_GOOGLESECRET);
+    // console.log (process.env.REACT_APP_GOOGLESECRET);
 
     let queryURL = 'https://www.googleapis.com/books/v1/volumes?q=' + title + '+inauthor:' + author + '&key=AIzaSyAsQc_MVFx8AusunHiSU18mbyM4rLCMZ_c';
     // + process.env.REACT_APP_GOOGLESECRET;
