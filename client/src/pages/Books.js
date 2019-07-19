@@ -2,7 +2,7 @@ import React, { Component } from "react";
 import axios from 'axios';
 import DeleteBtn from "../components/DeleteBtn";
 import Jumbotron from "../components/Jumbotron";
-import App from "../components/Modal";
+// import App from "../components/Modal";
 import Modal from "../components/Modal";
 import API from "../utils/API";
 import { Link } from "react-router-dom";
@@ -24,6 +24,7 @@ class Books extends Component {
     cover: "",
     apiResTitle:"",
     apiResAuthor:"",
+    apiResSyn:"", 
     apiResImage:""
   };
 
@@ -32,11 +33,34 @@ class Books extends Component {
   }
 
   showModal = e => {
-    console.log("triggerModel");
+    // console.log("triggerModel");
     this.setState({
       show: !this.state.show
     });
   };
+
+  onClose = e => {
+    this.props.onClose && this.props.onClose(e);
+  };
+
+  onSave = e => {
+    // alert("Add to DB");
+    this.props.onClose && this.props.onClose(e);
+    console.log("onsaveindex");
+
+    console.log(this.state.genre + "onsave");
+
+    API.saveBook({
+          title: this.state.apiResTitle,
+          author: this.state.apiResAuthor,
+          genre: this.state.genre, 
+          synopsis: this.state.synopsis,
+          cover: this.state.apiResImage
+        })
+          .then(res => this.loadBooks())
+          .catch(err => console.log(err));
+  };
+
 
   componentDidMount() {
     this.loadBooks();
@@ -45,17 +69,10 @@ class Books extends Component {
   loadBooks = () => {
     API.getBooks()
       .then(res =>
-        this.setState({ books: res.data, title: "", author: "", genre: "", synopsis: "" })
+        this.setState({ books: res.data, title: "", author: "", genre: "", synopsis: "", cover: "" })
       )
       .catch(err => console.log(err));
   };
-
-  // toggleModal = () => {
-  //   console.log("onload");
-  //   this.setState({
-  //     isOpen: !this.state.isOpen
-  //   });
-  // }
 
   deleteBook = id => {
     API.deleteBook(id)
@@ -74,9 +91,7 @@ class Books extends Component {
     // set what the API is calling
     let title = this.state.title;
     let author = this.state.author;
-    console.log (title + "," + author);
-
-    // console.log(process.env);
+    // console.log (title + "," + author);
 
     // console.log (process.env.REACT_APP_GOOGLESECRET);
 
@@ -94,15 +109,16 @@ class Books extends Component {
 
           let nowBook = this.gApiResults.items[0].volumeInfo;
 
-          // console.log (nowBook);
+          console.log("nowbook"+ this.state.genre);
           console.log(nowBook);
-          console.log (nowBook.authors[0]);
-          console.log (nowBook.imageLinks.thumbnail);
-          console.log (nowBook.title);
+          // console.log (nowBook.authors[0]);
+          // console.log (nowBook.imageLinks.thumbnail);
+          // console.log (nowBook.title);
 
           this.state.apiResTitle = nowBook.title;
           this.state.apiResImage = nowBook.imageLinks.thumbnail;
           this.state.apiResAuthor = nowBook.authors[0];
+          this.state.apiResSyn=nowBook.description;
           
           this.showModal();
           
@@ -136,9 +152,7 @@ class Books extends Component {
     // }
   };
 
-
-
-  
+// render the page
 
   render() {
     return (
@@ -213,10 +227,12 @@ class Books extends Component {
           <Row>
 
             <Col size="md-9">
-              <label>Title  :</label>
+              <label>Title: </label>
               <label> {this.state.apiResTitle}</label> <br/>
-              <label>Author :</label>
-              <label> {this.state.apiResAuthor}</label>
+              <label>Author: </label>
+              <label> {this.state.apiResAuthor}</label> <br/>
+              <label>Genre: </label>
+              <label> {this.state.genre}</label>
             </Col>
 
             <Col size="md-3">
@@ -224,6 +240,12 @@ class Books extends Component {
             </Col>
 
           </Row>
+          <FormBtn type="button" className="btn-secondary" onClick={this.onClose}>
+                Nope, let me try again
+          </FormBtn>
+          <FormBtn type="button" className="btn-primary" onClick={this.onSave}>
+                Yes, this is the book!
+          </FormBtn>
         </Modal>
 
       </Container>
