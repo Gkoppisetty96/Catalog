@@ -1,4 +1,6 @@
 import React from "react";
+import "./nav.css";
+
 
 function Nav() {
   return (
@@ -7,7 +9,7 @@ function Nav() {
         Personal Catalog
       </a>
 
-      <button type="button" className="btn btn-outline-light"> Login </button>
+      <button type="button" className="btn btn-outline-light" style= {{float: "right"}}> Login </button>
     </nav>
   );
 }
