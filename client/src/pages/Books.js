@@ -40,6 +40,10 @@ class Books extends Component {
 
   onClose = e => {
     this.props.onClose && this.props.onClose(e);
+
+    this.setState({ 
+      show: !this.state.show
+    });
   };
 
   onSave = e => {
