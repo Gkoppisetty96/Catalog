@@ -5,6 +5,16 @@ export default {
   getBooks: function() {
     return axios.get("/api/books");
   },
+// all the sorts
+  sortAZ: function() {
+    return axios.get("/api/books/sortAZ");
+  },
+  sortFic: function() {
+    return axios.get("/api/books/sortFic");
+  },
+  sortNonFic: function() {
+    return axios.get("/api/books/sortNonFic");
+  },
   // Gets the book with the given id
   getBook: function(id) {
     return axios.get("/api/books/" + id);

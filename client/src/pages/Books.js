@@ -2,13 +2,12 @@ import React, { Component } from "react";
 import axios from 'axios';
 import DeleteBtn from "../components/DeleteBtn";
 import Jumbotron from "../components/Jumbotron";
-// import App from "../components/Modal";
 import Modal from "../components/Modal";
 import API from "../utils/API";
 import { Link } from "react-router-dom";
 import { Col, Row, Container } from "../components/Grid";
 import { List, ListItem } from "../components/List";
-import { Input, FormBtn } from "../components/Form";
+import { Input, FormBtn, Btn } from "../components/Form";
 require("dotenv").config();
 
 
@@ -46,19 +45,25 @@ class Books extends Component {
   onSave = e => {
     // alert("Add to DB");
     this.props.onClose && this.props.onClose(e);
-    console.log("onsaveindex");
+    // console.log("onsaveBooks");
 
-    console.log(this.state.genre + "onsave");
+    console.log(this.state.apiResTitle + " on shelf");
 
     API.saveBook({
           title: this.state.apiResTitle,
           author: this.state.apiResAuthor,
           genre: this.state.genre, 
-          synopsis: this.state.synopsis,
+          synopsis: this.state.apiResSyn,
           cover: this.state.apiResImage
         })
           .then(res => this.loadBooks())
           .catch(err => console.log(err));
+    
+    // now force the modal to close because you've futzed with the code that much
+    // console.log("close?")
+    this.setState({ 
+      show: !this.state.show
+    });
   };
 
 
@@ -74,10 +79,65 @@ class Books extends Component {
       .catch(err => console.log(err));
   };
 
+  loadAZ = () => {
+    API.sortAZ()
+      .then(res =>
+        this.setState({ books: res.data, title: "", author: "", genre: "", synopsis: "", cover: "" })
+      )
+      .catch(err => console.log(err));
+  };
+
+  loadFic = () => {
+    API.sortFiction()
+      .then(res =>
+        this.setState({ books: res.data, title: "", author: "", genre: "", synopsis: "", cover: "" })
+      )
+      .catch(err => console.log(err));
+  };
+
+  loadNonFic = () => {
+    API.sortNonFiction()
+      .then(res =>
+        this.setState({ books: res.data, title: "", author: "", genre: "", synopsis: "", cover: "" })
+      )
+      .catch(err => console.log(err));
+  };
+
   deleteBook = id => {
     API.deleteBook(id)
       .then(res => this.loadBooks())
       .catch(err => console.log(err));
+  };
+
+  sortBooks = event => {
+    event.preventDefault();
+    let nowSort = event.target.id;
+
+    console.log(nowSort);
+
+    switch(nowSort) {
+      case 'all' :
+        API.getBooks()
+          .then(res => this.loadBooks())
+          .catch(err => console.log(err));
+        break;
+      case 'az':
+        API.sortAZ()
+          .then(res => this.loadAZ())
+          .catch(err => console.log(err));
+        break;
+      case 'fiction':
+        API.sortFic()
+          .then(res => this.loadFic())
+          .catch(err => console.log(err))
+        break;
+      case 'nonfiction':
+        API.sortNonFic()
+          .then(res => this.loadNonFic())
+          .catch(err => console.log(err));
+        break;
+    }
+
   };
 
   handleInputChange = event => {
@@ -103,13 +163,13 @@ class Books extends Component {
       .then(res => {
         
         if(res.status === 200){
-          console.log("SUCCESS")
-          console.log (res.data);
+          console.log("Book Found")
+          // console.log (res.data);
           this.gApiResults = res.data;
 
           let nowBook = this.gApiResults.items[0].volumeInfo;
 
-          console.log("nowbook"+ this.state.genre);
+          // console.log("nowbook"+ this.state.genre);
           console.log(nowBook);
           // console.log (nowBook.authors[0]);
           // console.log (nowBook.imageLinks.thumbnail);
@@ -134,22 +194,9 @@ class Books extends Component {
 
     // call google API
     this.googleBooksAPI();
-
     // user confirmation in modal 
-
     // add to DB
 
-    // if (this.state.title && this.state.author && this.state.genre) {
-    //   API.saveBook({
-    //     title: this.state.title,
-    //     author: this.state.author,
-    //     genre: this.state.genre, 
-    //     synopsis: this.state.synopsis,
-    //     cover: this.state.cover
-    //   })
-    //     .then(res => this.loadBooks())
-    //     .catch(err => console.log(err));
-    // }
   };
 
 // render the page
@@ -199,10 +246,12 @@ class Books extends Component {
               <h1>My Bookshelf</h1>
             </Jumbotron>
 
-            <button type="button" className="btn btn-outline-dark" id= "all" > All </button>
-            <button type="button" className="btn btn-outline-dark" id= "az" > A - Z </button>
-            <button type="button" className="btn btn-outline-dark" id= "fiction"> Fiction </button>
-            <button type="button" className="btn btn-outline-dark" id= "nonfiction"> Non-Fiction </button>
+            <Btn type="button" className="btn btn-outline-dark" id= "all" onClick={this.sortBooks}> All </Btn>
+            <Btn type="button" className="btn btn-outline-dark" id= "az" onClick={this.sortBooks}> A - Z </Btn>
+            <Btn type="button" className="btn btn-outline-dark" id= "fiction" onClick={this.sortBooks}> Fiction </Btn>
+            <Btn type="button" className="btn btn-outline-dark" id= "nonfiction" onClick={this.sortBooks}> Non-Fiction </Btn>
+
+            <br/>
         
             {this.state.books.length ? (
               <List>
@@ -226,7 +275,7 @@ class Books extends Component {
         <Modal onClose={this.showModal} show={this.state.show}>
           <Row>
 
-            <Col size="md-9">
+            <Col size="md-7 md-offset-1">
               <label>Title: </label>
               <label> {this.state.apiResTitle}</label> <br/>
               <label>Author: </label>
@@ -235,17 +284,19 @@ class Books extends Component {
               <label> {this.state.genre}</label>
             </Col>
 
-            <Col size="md-3">
+            <Col size="md-3 md-offset-1">
               <img src={this.state.apiResImage}/>
             </Col>
 
           </Row>
-          <FormBtn type="button" className="btn-secondary" onClick={this.onClose}>
+          <Row>
+            <Btn type="button" className="btn-secondary" onClick={this.onClose}>
                 Nope, let me try again
-          </FormBtn>
-          <FormBtn type="button" className="btn-primary" onClick={this.onSave}>
+            </Btn>
+            <Btn type="button" className="btn-primary" onClick={this.onSave}>
                 Yes, this is the book!
-          </FormBtn>
+            </Btn>
+          </Row>
         </Modal>
 
       </Container>

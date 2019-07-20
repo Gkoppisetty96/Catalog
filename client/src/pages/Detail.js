@@ -25,25 +25,31 @@ class Detail extends Component {
               <h1>
                 {this.state.book.title} by {this.state.book.author}
               </h1>
-              <h3>
-              {this.state.book.genre}
-              </h3>
+              
             </Jumbotron>
           </Col>
         </Row>
         <Row>
-          <Col size="md-10 md-offset-1">
+          <Col size="md-7 md-offset-1">
             <article>
+              <h3>
+              {this.state.book.genre}
+              </h3>
               <h1>Synopsis</h1>
               <p>
                 {this.state.book.synopsis}
               </p>
             </article>
           </Col>
+          <Col size="md-3 md-offset-1">
+            <article>
+              <img src={this.state.book.cover} alt= "cover"/>
+            </article>
+          </Col>
         </Row>
         <Row>
           <Col size="md-2">
-            <Link to="/">← Back to Authors</Link>
+            <Link to="/">← Back to your Catalog</Link>
           </Col>
         </Row>
       </Container>

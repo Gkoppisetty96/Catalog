@@ -1,9 +1,9 @@
 import React from "react";
 import "./modal.css";
 import PropTypes from "prop-types";
-import API from "../../utils/API";
 
 export default class Modal extends React.Component {
+  // onClose and onSave are defined in the Books.js because the API results weren't defined in this
   // onClose = e => {
   //   this.props.onClose && this.props.onClose(e);
   // };
@@ -31,16 +31,10 @@ export default class Modal extends React.Component {
       return null;
     }
     return (
-      <div className="modal" id="modal">
+      <div className="modal" id="modal" style= {{padding: 25}}>
       <div>
           <h2>Confirm Book</h2>
-          <div className="content">{this.props.children}</div>
-          <div className="actions">
-          {/* <div className="modal-footer"> */}
-            {/* <button type="button" className="btn-secondary" onClick={this.onClose}>Cancel</button>
-            <button type="button" className="btn-primary" onClick={this.onSave} >Add</button> */}
-          {/* </div> */}
-        </div>
+          <div className="content" style={{ padding:10}}>{this.props.children}</div>
       </div>
       </div>
     );
