@@ -155,8 +155,7 @@ class Books extends Component {
 
     // console.log (process.env.REACT_APP_GOOGLESECRET);
 
-    let queryURL = 'https://www.googleapis.com/books/v1/volumes?q=' + title + '+inauthor:' + author + '&key=AIzaSyAsQc_MVFx8AusunHiSU18mbyM4rLCMZ_c';
-    // + process.env.REACT_APP_GOOGLESECRET;
+    let queryURL = 'https://www.googleapis.com/books/v1/volumes?q=' + title + '+inauthor:' + author + '&key=' + process.env.REACT_APP_GOOGLESECRET;
 
     // axios call
     axios.get(queryURL)
