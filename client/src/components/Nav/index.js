@@ -9,7 +9,7 @@ function Nav() {
         Personal Catalog
       </a>
 
-      <button type="button" className="btn btn-outline-light" style= {{float: "right"}}> Login </button>
+      {/* <button type="button" className="btn btn-outline-light" style= {{float: "right"}}> Login </button> */}
     </nav>
   );
 }

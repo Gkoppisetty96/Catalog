@@ -7,18 +7,19 @@ router.route("/")
   .post(booksController.create);
 
 // match with /api/books/sort ??
+router.route("/sortAA")
+  .get(booksController.sortAA)
+  .post(booksController.create);
 router.route("/sortAZ")
   .get(booksController.sortAZ)
   .post(booksController.create);
-
-router.route("/sortFic")
-  .get(booksController.sortFiction)
+router.route("/sortTA")
+  .get(booksController.sortTA)
   .post(booksController.create);
-
-router.route("/sortNonFic")
-  .get(booksController.sortNonFiction)
+router.route("/sortTZ")
+  .get(booksController.sortTZ)
   .post(booksController.create);
-
+  
 // Matches with "/api/books/:id"
 router
   .route("/:id")

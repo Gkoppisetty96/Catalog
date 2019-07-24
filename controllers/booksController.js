@@ -9,27 +9,34 @@ module.exports = {
       .then(dbModel => res.json(dbModel))
       .catch(err => res.status(422).json(err));
   },
-  sortAZ: function(req, res) {
+  sortAA: function(req, res) {
     db.Book
       .find(req.query)
       .sort({ author: 1 })
       .then(dbModel => res.json(dbModel))
       .catch(err => res.status(422).json(err));
   },
-  sortFiction: function(req, res) {
+  sortAZ: function(req, res) {
     db.Book
       .find(req.query)
-      .sort({ genre : "Fiction" })
+      .sort({ author: -1 })
       .then(dbModel => res.json(dbModel))
       .catch(err => res.status(422).json(err));
   },
-  sortNonFiction: function(req, res) {
+  sortTA: function(req, res) {
     db.Book
       .find(req.query)
-      .sort({ "genre" : "Non-Fiction"  })
+      .sort({ title: 1 })
       .then(dbModel => res.json(dbModel))
       .catch(err => res.status(422).json(err));
   },
+  sortTZ: function(req, res) {
+    db.Book
+      .find(req.query)
+      .sort({ title: -1 })
+      .then(dbModel => res.json(dbModel))
+      .catch(err => res.status(422).json(err));
+  },  
   findById: function(req, res) {
     db.Book
       .findById(req.params.id)

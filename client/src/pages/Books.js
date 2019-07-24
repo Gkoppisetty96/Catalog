@@ -32,7 +32,6 @@ class Books extends Component {
   }
 
   showModal = e => {
-    // console.log("triggerModel");
     this.setState({
       show: !this.state.show
     });
@@ -40,17 +39,14 @@ class Books extends Component {
 
   onClose = e => {
     this.props.onClose && this.props.onClose(e);
-
+// force modal close
     this.setState({ 
       show: !this.state.show
     });
   };
 
   onSave = e => {
-    // alert("Add to DB");
     this.props.onClose && this.props.onClose(e);
-    // console.log("onsaveBooks");
-
     console.log(this.state.apiResTitle + " on shelf");
 
     API.saveBook({
@@ -63,8 +59,7 @@ class Books extends Component {
           .then(res => this.loadBooks())
           .catch(err => console.log(err));
     
-    // now force the modal to close because you've futzed with the code that much
-    // console.log("close?")
+    // now force the modal to close
     this.setState({ 
       show: !this.state.show
     });
@@ -83,6 +78,15 @@ class Books extends Component {
       .catch(err => console.log(err));
   };
 
+  // sort button loads
+  loadAA = () => {
+    API.sortAA()
+      .then(res =>
+        this.setState({ books: res.data, title: "", author: "", genre: "", synopsis: "", cover: "" })
+      )
+      .catch(err => console.log(err));
+  };
+
   loadAZ = () => {
     API.sortAZ()
       .then(res =>
@@ -91,16 +95,16 @@ class Books extends Component {
       .catch(err => console.log(err));
   };
 
-  loadFic = () => {
-    API.sortFiction()
+  loadTA = () => {
+    API.sortTA()
       .then(res =>
         this.setState({ books: res.data, title: "", author: "", genre: "", synopsis: "", cover: "" })
       )
       .catch(err => console.log(err));
   };
 
-  loadNonFic = () => {
-    API.sortNonFiction()
+  loadTZ = () => {
+    API.sortTZ()
       .then(res =>
         this.setState({ books: res.data, title: "", author: "", genre: "", synopsis: "", cover: "" })
       )
@@ -120,24 +124,29 @@ class Books extends Component {
     console.log(nowSort);
 
     switch(nowSort) {
-      case 'all' :
+      case 'time' :
         API.getBooks()
           .then(res => this.loadBooks())
           .catch(err => console.log(err));
         break;
-      case 'az':
-        API.sortAZ()
-          .then(res => this.loadAZ())
+      case 'authorA':
+        API.sortAA()
+          .then(res => this.loadAA())
           .catch(err => console.log(err));
         break;
-      case 'fiction':
-        API.sortFic()
-          .then(res => this.loadFic())
+      case 'authorZ':
+        API.sortAZ()
+          .then(res => this.loadAZ())
           .catch(err => console.log(err))
         break;
-      case 'nonfiction':
-        API.sortNonFic()
-          .then(res => this.loadNonFic())
+      case 'titleA':
+        API.sortTA()
+          .then(res => this.loadTA())
+          .catch(err => console.log(err));
+        break;
+      case 'titleZ':
+        API.sortTZ()
+          .then(res => this.loadTZ())
           .catch(err => console.log(err));
         break;
     }
@@ -249,10 +258,11 @@ class Books extends Component {
               <h1>My Bookshelf</h1>
             </Jumbotron>
 
-            <Btn type="button" className="btn btn-outline-dark" id= "all" onClick={this.sortBooks}> All </Btn>
-            <Btn type="button" className="btn btn-outline-dark" id= "az" onClick={this.sortBooks}> A - Z </Btn>
-            <Btn type="button" className="btn btn-outline-dark" id= "fiction" onClick={this.sortBooks}> Fiction </Btn>
-            <Btn type="button" className="btn btn-outline-dark" id= "nonfiction" onClick={this.sortBooks}> Non-Fiction </Btn>
+            <Btn type="button" className="btn btn-outline-dark" id= "time" onClick={this.sortBooks}> Time </Btn>
+            <Btn type="button" className="btn btn-outline-dark" id= "authorA" onClick={this.sortBooks}> Authors A-Z </Btn>
+            <Btn type="button" className="btn btn-outline-dark" id= "authorZ" onClick={this.sortBooks}> Authors Z-A </Btn>
+            <Btn type="button" className="btn btn-outline-dark" id= "titleA" onClick={this.sortBooks}> Titles A-Z </Btn>
+            <Btn type="button" className="btn btn-outline-dark" id= "titleZ" onClick={this.sortBooks}> Titles Z-A </Btn>
 
             <br/>
         

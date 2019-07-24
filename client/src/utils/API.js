@@ -6,14 +6,17 @@ export default {
     return axios.get("/api/books");
   },
 // all the sorts
+  sortAA: function() {
+    return axios.get("/api/books/sortAA");
+  },
   sortAZ: function() {
     return axios.get("/api/books/sortAZ");
   },
-  sortFic: function() {
-    return axios.get("/api/books/sortFic");
+  sortTA: function() {
+    return axios.get("/api/books/sortTA");
   },
-  sortNonFic: function() {
-    return axios.get("/api/books/sortNonFic");
+  sortTZ: function() {
+    return axios.get("/api/books/sortTZ");
   },
   // Gets the book with the given id
   getBook: function(id) {
